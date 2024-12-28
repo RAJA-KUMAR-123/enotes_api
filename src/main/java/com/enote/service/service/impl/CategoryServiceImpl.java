@@ -42,15 +42,55 @@ public class CategoryServiceImpl implements CategoryService {
 	
 		Category category = mapper.map(categoryDto, Category.class);
 		
-		category.setIsDeleted(false);
-		category.setCreatedBy(1);
-		category.setCreatedOn(new Date());
+		if(ObjectUtils.isEmpty(category.getId())) {
+			category.setIsDeleted(false);
+			category.setCreatedBy(1);
+			category.setCreatedOn(new Date());
+		}else {
+			updateSaveCategory(category);
+		}
+		
+		
 		Category saveCategory = categoryRepo.save(category);
 		if (ObjectUtils.isEmpty(saveCategory)) {
 			return false;
 		}
 		return true;
 	}
+	private void updateSaveCategory(Category category) {
+		Optional<Category> FindbyId = categoryRepo.findById(category.getId());
+		if(FindbyId.isPresent()) {
+			Category exitingCategory = FindbyId.get();
+			category.setCreatedBy(exitingCategory.getCreatedBy());
+			category.setCreatedOn(exitingCategory.getCreatedOn());
+			category.setIsDeleted(exitingCategory.getIsDeleted());
+			
+			category.setUpdatedBy(1);
+			category.setUpdatedOn(new Date());
+			
+		}
+	
+//		if (findById.isPresent()) {
+//			Category existCategory = findById.get();
+//			category.setCreatedBy(existCategory.getCreatedBy());
+//			category.setCreatedOn(existCategory.getCreatedOn());
+//			category.setIsDeleted(existCategory.getIsDeleted());
+//			
+//			category.setUpdatedBy(1);
+//			category.setUpdatedOn(new Date());
+//		}
+	}
+	
+//	private void updateSaveCategory(Category category) {
+//	    Optional<Category> findById = categoryRepo.findById(category.getId());
+//	    if (findById.isPresent()) {
+//	        Category existingCategory = findById.get(); // Extract the Category object
+//	        existingCategory.setCreatedBy(category.getCreatedBy()); // Update the createdBy field
+//	        categoryRepo.save(existingCategory); // Save the updated category back to the repository
+//	    }
+//	}
+	
+	
 	@Override
 	public List<CategoryDto> getAllCategory() {
 		List<Category> getAllCategory=categoryRepo.findByIsDeletedFalse();
