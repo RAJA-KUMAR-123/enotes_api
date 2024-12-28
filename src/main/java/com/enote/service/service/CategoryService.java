@@ -7,9 +7,13 @@ import com.enote.dto.CategoryRespose;
 
 public interface CategoryService {
 	
-	public Boolean saveCategory(CategoryDto categoryDto);
-	
+	Boolean saveCategory(CategoryDto categoryDto); 
 	public List<CategoryDto> getAllCategory();
 
 	public List<CategoryRespose> getActiveCategory();
+
+	public CategoryDto getCategoryByid(Integer id);
+
+	public Boolean deletedById(Integer id);
+
 }
