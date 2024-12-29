@@ -17,8 +17,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.enote.dto.CategoryDto;
 import com.enote.dto.CategoryRespose;
+import com.enote.exception.ResourceNotFound;
 import com.enote.service.service.CategoryService;
 
+import lombok.extern.slf4j.Slf4j;
+
+
+@Slf4j
 @RestController
 @RequestMapping("/api/v1/category")
 public class CategoryController {
@@ -37,6 +42,8 @@ public class CategoryController {
 	
 	@GetMapping("/get_category")
 	 public ResponseEntity<?> getCategory(){
+		String name =null;
+		name.toUpperCase();
 		 List<CategoryDto> getAllCategory = categoryService.getAllCategory();
 		 if(CollectionUtils.isEmpty(getAllCategory)) {
 			 return ResponseEntity.noContent().build();
@@ -54,12 +61,26 @@ public class CategoryController {
 	 }
 	
 	@GetMapping("/{id}")
-	public ResponseEntity<?> getCategoryid(@PathVariable Integer id){    
-	   CategoryDto categoryDto=categoryService.getCategoryByid(id);
-	   if(ObjectUtils.isEmpty(categoryDto)) {
-			 return new ResponseEntity<>("This "+ id +" is not found",HttpStatus.NOT_FOUND);
-		 }
-		 return new ResponseEntity<>(categoryDto, HttpStatus.OK);
+	public ResponseEntity<?> getCategoryid(@PathVariable Integer id) throws Exception{  
+		CategoryDto categoryDto=categoryService.getCategoryByid(id);
+		   if(ObjectUtils.isEmpty(categoryDto)) {
+				 return new ResponseEntity<>("This "+ id +" is not found",HttpStatus.NOT_FOUND);
+			 }
+			 return new ResponseEntity<>(categoryDto, HttpStatus.OK);
+//		try {
+//			CategoryDto categoryDto=categoryService.getCategoryByid(id);
+//			   if(ObjectUtils.isEmpty(categoryDto)) {
+//					 return new ResponseEntity<>("This "+ id +" is not found",HttpStatus.NOT_FOUND);
+//				 }
+//				 return new ResponseEntity<>(categoryDto, HttpStatus.OK);
+//		}
+//		catch(ResourceNotFound e) {
+//			log.error("Controller :: getCategoryById ::  "+e.getMessage());
+//			return new ResponseEntity<>(e.getMessage(),HttpStatus.NOT_FOUND);
+//		}
+//		catch(Exception e) {
+//			return new ResponseEntity<>(e.getMessage(),HttpStatus.INTERNAL_SERVER_ERROR);
+//		}
 	}
 	
 	@DeleteMapping("/{id}")
