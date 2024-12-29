@@ -11,6 +11,7 @@ import org.springframework.util.ObjectUtils;
 
 import com.enote.dto.CategoryDto;
 import com.enote.dto.CategoryRespose;
+import com.enote.exception.ResourceNotFound;
 import com.enote.model.Category;
 import com.enote.repository.CategoryRepository;
 import com.enote.service.service.CategoryService;
@@ -50,7 +51,6 @@ public class CategoryServiceImpl implements CategoryService {
 			updateSaveCategory(category);
 		}
 		
-		
 		Category saveCategory = categoryRepo.save(category);
 		if (ObjectUtils.isEmpty(saveCategory)) {
 			return false;
@@ -70,34 +70,15 @@ public class CategoryServiceImpl implements CategoryService {
 			
 		}
 	
-//		if (findById.isPresent()) {
-//			Category existCategory = findById.get();
-//			category.setCreatedBy(existCategory.getCreatedBy());
-//			category.setCreatedOn(existCategory.getCreatedOn());
-//			category.setIsDeleted(existCategory.getIsDeleted());
-//			
-//			category.setUpdatedBy(1);
-//			category.setUpdatedOn(new Date());
-//		}
 	}
-	
-//	private void updateSaveCategory(Category category) {
-//	    Optional<Category> findById = categoryRepo.findById(category.getId());
-//	    if (findById.isPresent()) {
-//	        Category existingCategory = findById.get(); // Extract the Category object
-//	        existingCategory.setCreatedBy(category.getCreatedBy()); // Update the createdBy field
-//	        categoryRepo.save(existingCategory); // Save the updated category back to the repository
-//	    }
-//	}
-	
-	
+		
 	@Override
 	public List<CategoryDto> getAllCategory() {
 		List<Category> getAllCategory=categoryRepo.findByIsDeletedFalse();
 		
 		List<CategoryDto> categoryDtoList = getAllCategory.stream().map(cat->mapper.map(cat, CategoryDto.class)).toList();
 //		if(ObjectUtils.isEmpty(getAllCategory)) {
-//			return ;
+//			return ; 
 //		}
 		return categoryDtoList;
 	}
@@ -109,10 +90,13 @@ public class CategoryServiceImpl implements CategoryService {
 		return categoryList;
 	}
 	@Override
-	public CategoryDto getCategoryByid(Integer id) {
-		Optional<Category> findByCatId = categoryRepo.findById(id);
-		if(findByCatId.isPresent()) {
-			Category category = findByCatId.get();
+	public CategoryDto getCategoryByid(Integer id) throws Exception {
+		Category category = categoryRepo.findById(id)
+				.orElseThrow(()->new ResourceNotFound("Category not found with this id "+id));
+		if(!ObjectUtils.isEmpty(category)) {
+			if(category.getName()==null ) {
+				throw new IllegalArgumentException("Name value is null");
+			}
 				return mapper.map(category,CategoryDto.class);
 		}
 		return null;
