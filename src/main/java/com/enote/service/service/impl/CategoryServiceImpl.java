@@ -15,6 +15,7 @@ import com.enote.exception.ResourceNotFound;
 import com.enote.model.Category;
 import com.enote.repository.CategoryRepository;
 import com.enote.service.service.CategoryService;
+import com.enote.utils.Validation;
 
 @Service // bean
 public class CategoryServiceImpl implements CategoryService {
@@ -25,7 +26,10 @@ public class CategoryServiceImpl implements CategoryService {
 	@Autowired
 	private ModelMapper mapper;
 	
-	
+	@Autowired
+	private Validation validation;
+		
+
 //	@Override
 //	public Boolean saveCategory(Category category) {
 //		category.setIsDeleted(false);
@@ -41,6 +45,9 @@ public class CategoryServiceImpl implements CategoryService {
 	@Override
 	public Boolean saveCategory(CategoryDto categoryDto) {
 	
+		// Checking validation
+		validation.categoryValidation(categoryDto);
+		// after validation next line will work.
 		Category category = mapper.map(categoryDto, Category.class);
 		
 		if(ObjectUtils.isEmpty(category.getId())) {
