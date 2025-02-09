@@ -11,6 +11,7 @@ import org.springframework.util.ObjectUtils;
 
 import com.enote.dto.CategoryDto;
 import com.enote.dto.CategoryRespose;
+import com.enote.exception.ExitDataExeception;
 import com.enote.exception.ResourceNotFound;
 import com.enote.model.Category;
 import com.enote.repository.CategoryRepository;
@@ -47,6 +48,14 @@ public class CategoryServiceImpl implements CategoryService {
 	
 		// Checking validation
 		validation.categoryValidation(categoryDto);
+		
+		Boolean exits= categoryRepo.existsByName(categoryDto.getName().trim());
+		
+		if(exits) {
+			throw new ExitDataExeception("Category already exit");
+		}
+		
+		
 		// after validation next line will work.
 		Category category = mapper.map(categoryDto, Category.class);
 		
@@ -96,6 +105,7 @@ public class CategoryServiceImpl implements CategoryService {
 		List<CategoryRespose> categoryList = activeCategory.stream().map(cat->mapper.map(cat, CategoryRespose.class)).toList();
 		return categoryList;
 	}
+	
 	@Override
 	public CategoryDto getCategoryByid(Integer id) throws Exception {
 		Category category = categoryRepo.findById(id)
@@ -107,7 +117,8 @@ public class CategoryServiceImpl implements CategoryService {
 				return mapper.map(category,CategoryDto.class);
 		}
 		return null;
-	}
+	}  
+	
 	@Override
 	public Boolean deletedById(Integer id) {
 		

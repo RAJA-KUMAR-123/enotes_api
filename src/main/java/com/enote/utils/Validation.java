@@ -34,8 +34,12 @@ public class Validation {
 		if(ObjectUtils.isEmpty(categoryDto.getIsActive())) {
 			error.put("IsActive", "IsActive value is coming empty");
 		}else {
-			if(categoryDto.getIsActive()!=Boolean.TRUE.booleanValue() || categoryDto.getIsActive()!=Boolean.FALSE.booleanValue()) {
-				error.put("IsActive", "Invalid isActive value.....");
+//			if(categoryDto.getIsActive()!=Boolean.TRUE.booleanValue() || categoryDto.getIsActive()!=Boolean.FALSE.booleanValue()) {
+//				error.put("IsActive", "Invalid isActive value.....");
+//			}
+			if (categoryDto.getIsActive() != Boolean.TRUE.booleanValue()
+					&& categoryDto.getIsActive() != Boolean.FALSE.booleanValue()) {
+				error.put("isActive", "invalid value isActive field ");
 			}
 		}
 		

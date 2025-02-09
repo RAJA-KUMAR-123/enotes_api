@@ -2,6 +2,7 @@ package com.enote.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
@@ -36,6 +37,20 @@ public class GlobalExceptionHandler {
 	public ResponseEntity<?> handleValidationException(ValidationException e){
 //		log.error("GlobalExceptionHandler :: handleResourceNotFoundException ::  "+e.getMessage());
 		return new ResponseEntity<>(e.getError(),HttpStatus.BAD_REQUEST);
+		
+	}
+	
+	@ExceptionHandler(ExitDataExeception.class)
+	public ResponseEntity<?> handleEixitDataExeception(ExitDataExeception e){
+//		log.error("GlobalExceptionHandler :: handleResourceNotFoundException ::  "+e.getMessage());
+		return new ResponseEntity<>(e.getMessage(),HttpStatus.CONFLICT);
+		
+	}
+	
+	@ExceptionHandler(HttpMessageNotReadableException.class)
+	public ResponseEntity<?> handleHttpMessageNotReadableException(HttpMessageNotReadableException e){
+//		log.error("GlobalExceptionHandler :: handleResourceNotFoundException ::  "+e.getMessage());
+		return new ResponseEntity<>(e.getMessage(),HttpStatus.BAD_REQUEST);
 		
 	}
 }
