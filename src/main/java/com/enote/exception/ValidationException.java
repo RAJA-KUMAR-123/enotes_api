@@ -2,6 +2,7 @@ package com.enote.exception;
 
 import java.util.Map;
 
+@SuppressWarnings("serial")
 public class ValidationException extends RuntimeException{
 	
 	private Map<String, Object> error;
